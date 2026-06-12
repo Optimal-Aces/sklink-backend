@@ -57,7 +57,7 @@ app.use('/api/audit', require('./routes/audit'));
 app.use('/api/documents', require('./routes/documents'));
 app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/team-events', require('./routes/teamEvents'));
-
+app.use('/api/points', require('./routes/points'));
 
 // Test route
 app.get('/', (req, res) => {
