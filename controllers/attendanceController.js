@@ -81,26 +81,30 @@ const getAttendanceLogs = async (req, res) => {
   try {
     const [logs] = await db.query(
       `
-      SELECT 
+      SELECT
         al.id,
         al.event_id,
         al.member_id,
-        al.created_at AS attendance_time,
+        al.scan_timestamp,
+        al.verification_status,
         m.first_name,
         m.last_name,
         m.member_id AS kk_id,
         m.profile_photo,
-        m.verification_status
+        m.verification_status AS member_status
       FROM attendance_logs al
-      JOIN members m ON al.member_id = m.id
+      INNER JOIN members m
+        ON al.member_id = m.id
       WHERE al.event_id = ?
-      ORDER BY al.created_at DESC
+      ORDER BY al.scan_timestamp DESC
       `,
       [eventId]
     );
 
     res.json(logs);
   } catch (error) {
+    console.error('GET ATTENDANCE LOGS ERROR:', error);
+
     res.status(500).json({
       message: 'Failed to fetch attendance logs.',
       error: error.message,
