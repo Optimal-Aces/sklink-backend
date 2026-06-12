@@ -62,6 +62,32 @@ const scanAttendance = async (req, res) => {
       );
     }
 
+    // Notify member
+    await db.query(
+      `
+      INSERT INTO notifications (
+        id,
+        user_id,
+        title,
+        message,
+        notification_type,
+        reference_id,
+        reference_type,
+        is_read
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, 0)
+      `,
+      [
+        uuidv4(),
+        members[0].user_id,
+        'Attendance Recorded',
+        `You successfully attended "${events[0].title}" and earned ${points} points.`,
+        'event',
+        events[0].id,
+        'attendance'
+      ]
+    );
+
     res.status(201).json({
       message: 'Attendance recorded successfully.',
       member: {
