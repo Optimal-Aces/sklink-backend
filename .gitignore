@@ -5,8 +5,8 @@ node_modules/
 .env
 
 # Upload folders
-uploads/
-temp/
+uploads/*
+!uploads/.gitkeep
 
 # Logs
 logs/

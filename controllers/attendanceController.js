@@ -75,4 +75,40 @@ const scanAttendance = async (req, res) => {
   }
 };
 
-module.exports = { scanAttendance };
+const getAttendanceLogs = async (req, res) => {
+  const { eventId } = req.params;
+
+  try {
+    const [logs] = await db.query(
+      `
+      SELECT 
+        al.id,
+        al.event_id,
+        al.member_id,
+        al.created_at AS attendance_time,
+        m.first_name,
+        m.last_name,
+        m.member_id AS kk_id,
+        m.profile_photo,
+        m.verification_status
+      FROM attendance_logs al
+      JOIN members m ON al.member_id = m.id
+      WHERE al.event_id = ?
+      ORDER BY al.created_at DESC
+      `,
+      [eventId]
+    );
+
+    res.json(logs);
+  } catch (error) {
+    res.status(500).json({
+      message: 'Failed to fetch attendance logs.',
+      error: error.message,
+    });
+  }
+};
+
+module.exports = {
+  scanAttendance,
+  getAttendanceLogs,
+};
